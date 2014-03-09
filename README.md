@@ -1,6 +1,9 @@
 # Simple Twitter Connector
 This is a PHP, MySQL, and JavaScript Twitter feed reader. It makes use of
-J7mbo's Twitter API [https://github.com/J7mbo/twitter-api-php]
+the PHP Twitter API connector created by
+[J7mbo](https://github.com/J7mbo/twitter-api-php). The JavaScript class reads
+the tweet objects returned from the Twitter API and builds an HTML string
+for each of them.
 
 ## Requirements
 
@@ -25,11 +28,26 @@ Include the stc.main.js file in your HTML page
 Instantiate the `TwitterConnector` class in your JavaScript and initialize
 it with your configuration.
 ```
+// create the connector configuration, this mirrors the default
+var tcConfig = {
+    // twitter api url info
+    "requestType" : "GET",
+    "format"      : "json",
+    "url"         : "https://api.twitter.com" // base url
+        + "/1.1"                              // version
+        + "/statuses"                         // resource family
+        + "/user_timeline"                    // resource
+        + ".",                                // format
+    "getField"    : "?screen_name=johngieselmann",
+    "onComplete"  : function(tweetsHtml, tweets){
+        console.log(tweetsHtml, tweets);
+    },
+    "screenName"  : "johngieselmann"
+};
+
 // instantiate and initialize
 var tc = new window.TwitterConnector();
-tc.init({
-    onComplete: myFunctionName
-});
+tc.init(tcConfig);
 
 // request the tweets
 tc.getTweets();
@@ -37,20 +55,9 @@ tc.getTweets();
 
 ---
 
-# MySQL
-
-We are using a database to store the requested tweets to prevent hitting the
-Twitter API request limit. The tweets are stored as a JSON string in the `tweets`
-table created by the database patch.
-
----
-
 # JavaScript Configuration
 
 The configuration for the class. These can be overridden on init.
-
-- **display**: The type of display style to render [tile|row].
-    - **Default** - tile
 
 - **format**: The return format of the request.
     - **Default** - "json"
@@ -61,8 +68,8 @@ The configuration for the class. These can be overridden on init.
 
 - **onComplete**: The function called once all tweets have been
     pulled and assigned to the class.
-    - **Param 1** - An array of tweet objects return from the request.
-    - **Param 2** - An array of html as a string for each tweet.
+    - **Param 1** - An array of html as a string for each tweet.
+    - **Param 2** - An array of tweet objects return from the request.
     - **Default** - An anonymous function that console logs results.
 
 - **requestType**: The type of ajax request [ "GET" | "POST" ]
@@ -74,4 +81,12 @@ The configuration for the class. These can be overridden on init.
     - **Default** - johngieselmann (me)
 
 - **url**: The base Twitter API url from which to retrieve tweets.
+
+---
+
+# MySQL
+
+We are using a database to store the requested tweets to prevent hitting the
+Twitter API request limit. The tweets are stored as a JSON string in the `tweets`
+table created by the database patch.
 

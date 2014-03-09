@@ -1,17 +1,22 @@
 (function(window, document, $, undefined){
 
+    /**
+     * A simple Twitter connector that reads the tweet objects returned from
+     * the Twitter API and builds an HTML string for each of them.
+     *
+     * @author JohnG <john.gieselmann@gmail.com>
+     */
     function TwitterConnector() {
+
+        // retain scope
         var self = this;
 
         /**
          * The configuration for the class. These can be overridden on init.
-         *   - requestType: The type of ajax request [GET|POST]
-         *       Default - POST
          *
          *   - format: The return format of the request.
-         *       Default - json
          *
-         *   - url: The base Twitter API url from which to retrieve tweets.
+         *       Default - json
          *
          *   - getField: The query string for the url. This should match a
          *       valid query string for the API.
@@ -21,17 +26,19 @@
          *   - onComplete: The function called once all tweets have been
          *       pulled and assigned to the class.
          *
-         *       Param 1 - An array of tweet objects return from the request.
-         *       Param 2 - An array of html as a string for each tweet.
+         *       Param 1 - An array of html as a string for each tweet.
+         *       Param 2 - An array of tweet objects return from the request.
          *       Default - An anonymous function that console logs results.
+         *
+         *   - requestType: The type of ajax request [GET|POST]
+         *       Default - POST
          *
          *   - screenName: The screen name that is the target of all the
          *       twitter icons... probably the same user for which we are
          *       fetching tweets.
          *       Default - johngieselmann (me)
          *
-         *   - display: The type of display style to render [tile|row].
-         *       Default - tile
+         *   - url: The base Twitter API url from which to retrieve tweets.
          */
         this.config = {
             // twitter api url info
@@ -43,30 +50,23 @@
                 + "/user_timeline"                    // resource
                 + ".",                                // format
             "getField"    : "?screen_name=johngieselmann",
-            "onComplete"  : function(tweets, tweetsHtml){
-                console.log(tweets, tweetsHtml);
+            "onComplete"  : function(tweetsHtml, tweets){
+                console.log(tweetsHtml, tweets);
             },
-            "screenName" : "johngieselmann",
+            "screenName"  : "johngieselmann",
 
-            // style settings
-            "display"     : "tile"
+            // helper configuration
+            "helperPath"  : "php/twitter_connector.php"
         };
 
-
         /**
-         * The location of the PHP file.
-         * @var str url
-         */
-        this.connectorUrl = "helpers/twitter_connector.php";
-
-        /**
-         * The array of tweet objects.
+         * The array of tweet objects returned from the API.
          * @var arr tweets
          */
         this.tweets = [];
 
         /**
-         * The html for each tweet.
+         * An array of HTML for each tweet.
          * @var arr tweetsHtml
          */
         this.tweetsHtml = [];
@@ -84,8 +84,32 @@
         /**
          * The templates for the various types of views.
          * @var obj templates
+         *
+         *   "elKey" : {
+         *       // the HTML tag to render for the element
+         *       "el"       : "a",
+         *
+         *       // an object of HTML attributes and values applied to the
+         *       // element tag, see this.buildElement() for <%text%>
+         *       // replacement in the values
+         *       "attr"     : {
+         *           "class"  : "stc-hashtag",
+         *           "href"   : "http://twitter.com/hashtag/<%hashText%>",
+         *           "target" : "_blank"
+         *       },
+         *
+         *       // an array of other element keys to be built within this
+         *       // element in the order of declaration
+         *       "children" : [
+         *           "childElementKey1",
+         *           "childElementKey2"
+         *       ]
+         *
+         *       // place the content after the children, the default is
+         *       // before if left out
+         *       "content"  : "after"
+         *   }
          */
-        //jam
         this.dom = {
             // the html for the entities
             "hashtags" : {
@@ -198,6 +222,15 @@
             }
         };
 
+        /**
+         * Initialize the class by setting the class configuration.
+         *
+         * @author JohnG <john.gieselmann@gmail.com>
+         *
+         * @param obj options The configuration options for the class.
+         *
+         * @return void
+         */
         this.init = function(options) {
 
             // assign the options to the config
@@ -217,19 +250,19 @@
         this.getTweets = function() {
 
             $.ajax({
-                url:      self.connectorUrl,
-                type:     "POST",
-                data:     {
-                    "tcConfig": {
+                url      : self.config.helperPath,
+                type     : "POST",
+                data     : {
+                    "tcConfig" : {
                         "requestType" : self.config.requestType,
                         "url"         : self.config.url + self.config.format,
                         "getField"    : self.config.getField
                     }
                 },
-                dataType: self.config.format,
-                success:  self.getSuccess,
-                error:    self.getError,
-                complete: self.getComplete
+                dataType : self.config.format,
+                success  : self.getSuccess,
+                error    : self.getError,
+                complete : self.getComplete
             });
         };
 
@@ -259,7 +292,7 @@
 
             // call the onComplete callback
             if (typeof self.config.onComplete === "function") {
-                self.config.onComplete(self.tweets, self.tweetsHtml);
+                self.config.onComplete(self.tweetsHTML, self.tweets);
             }
         };
 
@@ -353,13 +386,12 @@
          * The "content-<domKey>" key in the object is reserved for placing
          * content specific to the currently rendered element. This key is
          * in place because of recursive calling and needing to know when
-         * to insert content and where. If "contentP" is not defined in
+         * to insert content and where. If "content" is not defined in
          * the dom object, the content is rendered before the children.
          *
          * @return str tag The completed tag.
          */
         this.buildElement = function(domKey, replace) {
-            //jam
 
             // get the dom template
             var dom = self.dom[domKey];
@@ -552,6 +584,7 @@
         };
     }
 
+    // assign the class to the window
     window.TwitterConnector = TwitterConnector;
 
 }(window, document, jQuery, undefined));
