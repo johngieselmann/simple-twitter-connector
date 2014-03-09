@@ -15,10 +15,12 @@
          *
          *   - getField: The query string for the url. This should match a
          *       valid query string for the API.
+         *
          *       Default - johngieselmann (me)
          *
          *   - onComplete: The function called once all tweets have been
          *       pulled and assigned to the class.
+         *
          *       Param 1 - An array of tweet objects return from the request.
          *       Param 2 - An array of html as a string for each tweet.
          *       Default - An anonymous function that console logs results.
