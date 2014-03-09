@@ -7,6 +7,7 @@ for each of them.
 
 ## Requirements
 
+- Twitter App with oath access.
 - jQuery v1.11.0+ - For the JavaScript class.
 - PHP v5.3.10+ - For connecting to the Twitter API.
 - MySQL v5.5.34+ - For storing the tweets.
@@ -14,13 +15,20 @@ for each of them.
 ## Setup
 
 Replace the values in the `php/connect.php` file with the values corresponding
-to your database setup.
+to your database setup and Twitter app.
 ```
 $mysqli = new mysqli(
     "host",
     "username",
     "password",
     "database"
+);
+
+$oathInfo = array(
+    "oauth_access_token"        => "xxxx",
+    "oauth_access_token_secret" => "xxxx",
+    "consumer_key"              => "xxxx",
+    "consumer_secret"           => "xxxx",
 );
 ```
 
