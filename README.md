@@ -7,11 +7,22 @@ for each of them.
 
 ## Requirements
 
-- jQuery (vX.X included) - For the JavaScript class.
-- PHP - For connecting to the Twitter API.
-- MySQL - For storing the tweets.
+- jQuery v1.11.0+ - For the JavaScript class.
+- PHP v5.3.10+ - For connecting to the Twitter API.
+- MySQL v5.5.34+ - For storing the tweets.
 
 ## Setup
+
+Replace the values in the `php/connect.php` file with the values corresponding
+to your database setup.
+```
+$mysqli = new mysqli(
+    "host",
+    "username",
+    "password",
+    "database"
+);
+```
 
 Run the database patch from your server on the target MySQL database. This
 patch will create a `tweets` table used to store the accessed tweets to
@@ -20,9 +31,16 @@ prevent hitting the Twitter API request limit.
 cat mysql/twitter_connector.sql | mysql <your_database_name>
 ```
 
-Include the stc.main.js file in your HTML page
+Include the CSS files in your HTML.
 ```
-<script type="text/javascript" src="/path/to/stc.main.js"></script>
+<link type="text/css" rel="stylesheet" href="css/reset.css" />
+<link type="text/css" rel="stylesheet" href="css/ssc.main.css" />
+```
+
+Include the JavaScript files in your HTML.
+```
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="/js/stc.main.js"></script>
 ```
 
 Instantiate the `TwitterConnector` class in your JavaScript and initialize
@@ -56,11 +74,10 @@ tc.init(tcConfig);
 tc.getTweets();
 ```
 
----
-
 # JavaScript Configuration
 
-The configuration for the class. These can be overridden on init.
+The configuration for the class. These can (and should be) be changed with
+initialization.
 
 - **format**: The return format of the request.
     - **Default** - "json"
@@ -84,8 +101,6 @@ The configuration for the class. These can be overridden on init.
     - **Default** - johngieselmann (me)
 
 - **url**: The base Twitter API url from which to retrieve tweets.
-
----
 
 # MySQL
 
