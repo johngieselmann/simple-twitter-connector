@@ -1,4 +1,3 @@
-simple-social-connector
+simple-twitter-connector
 =======================
-
-This is a quick and easy social media feed reader.
+This is a JavaScript and PHP Twitter feed reader.
