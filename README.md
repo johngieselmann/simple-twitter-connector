@@ -42,7 +42,10 @@ var tcConfig = {
     "onComplete"  : function(tweetsHtml, tweets){
         console.log(tweetsHtml, tweets);
     },
-    "screenName"  : "johngieselmann"
+    "screenName"  : "johngieselmann",
+
+    // helper configuration
+    "helperPath"  : "php/twitter_connector.php"
 };
 
 // instantiate and initialize
