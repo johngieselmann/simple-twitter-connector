@@ -52,12 +52,7 @@ if ($getRecent && isset($_POST["tcConfig"])) {
 
     // initialize the twitter api exchange class with the codebac oauth
     try {
-        $tc = new TwitterAPIExchange(array(
-            "oauth_access_token"        => "2358754500-0U3NJNaDCrsby80rHpH9m8SNRMlIlkE6NQlugJ3",
-            "oauth_access_token_secret" => "LU7rJHmZwqrbW7P71kXQ5lbqfrp2gVs87YTYp0gVSpzbV",
-            "consumer_key"              => "cClBM4tPnogjDsC8XdRw",
-            "consumer_secret"           => "DLGZKIVU32vYnU562hBhXa6fVf1v1gmKJ4LdCKvMY",
-        ));
+        $tc = new TwitterAPIExchange($oauthInfo);
     } catch (Exception $e) {
         $msg = $e->getMessage();
         break;
