@@ -492,6 +492,26 @@
                     );
                     break;
 
+                case "urls":
+                    var el = self.buildElement(
+                        entityName,
+                        {
+                            "content-linkText" : data.url,
+                            "expandedUrl"      : data.expanded_url
+                        }
+                    );
+                    break;
+
+                case "media":
+                    var el = self.buildElement(
+                        entityName,
+                        {
+                            "content-linkText" : data.url,
+                            "mediaUrl"         : data.media_url
+                        }
+                    );
+                    break;
+
                 default:
                     var el = entityName;
             }
